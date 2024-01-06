@@ -1,20 +1,40 @@
 cmake_minimum_required(VERSION 3.16.0)
 
-project(median)
+project(median-element)
 
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+set(MEDIAN_EXE median)
+set(MEDIAN_LIB medianlib)
 
-set(SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(SOURCES_LIST ${SOURCES_DIR}/Median.cpp)
+include_directories(include)
+
+add_subdirectory(test)
+
+# Add compile options for the static lib and the executable but not for the unit tests
+if(MSVC)
+    add_compile_options(/W4 /WX)
+else()
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+endif()
+
+add_library(
+    ${MEDIAN_LIB}
+    STATIC
+    src/Median.cpp
+)
 
 add_executable(
-    ${PROJECT_NAME}
-    ${SOURCES_LIST}
+    ${MEDIAN_EXE}
     main.cpp
 )
 
-include_directories(PRIVATE include)
+# Link the Median lib to the main executable
+target_link_libraries(${MEDIAN_EXE} PRIVATE ${MEDIAN_LIB})
 
-add_subdirectory(test)
+add_custom_target(
+    run_median
+    COMMAND $<TARGET_FILE:${MEDIAN_EXE}>
+    COMMENT "Running ${MEDIAN_EXE} executable..."
+)

@@ -2,12 +2,6 @@ cmake_minimum_required(VERSION 3.16.0)
 
 project(median_test)
 
-add_executable(
-    ${PROJECT_NAME}
-    ${SOURCES_LIST}
-    median_tests.cpp
-)
-
 Include(FetchContent)
 
 FetchContent_Declare(
@@ -18,4 +12,16 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
+add_executable(
+    ${PROJECT_NAME}
+    median_tests.cpp
+)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE GTest::gtest_main)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${MEDIAN_LIB})
+
+add_custom_target(
+    run_median_tests
+    COMMAND $<TARGET_FILE:${PROJECT_NAME}>
+    COMMENT "Running median tests..."
+)
