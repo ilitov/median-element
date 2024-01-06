@@ -10,6 +10,7 @@ set(MEDIAN_LIB medianlib)
 
 include_directories(include)
 
+enable_testing()
 add_subdirectory(test)
 
 # Add compile options for the static lib and the executable but not for the unit tests

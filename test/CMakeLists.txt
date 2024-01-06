@@ -20,8 +20,5 @@ add_executable(
 target_link_libraries(${PROJECT_NAME} PRIVATE GTest::gtest_main)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${MEDIAN_LIB})
 
-add_custom_target(
-    run_median_tests
-    COMMAND $<TARGET_FILE:${PROJECT_NAME}>
-    COMMENT "Running median tests..."
-)
+include(GoogleTest)
+gtest_discover_tests(${PROJECT_NAME})
