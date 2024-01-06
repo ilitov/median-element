@@ -36,23 +36,62 @@ TEST(MedianTest, TwoElements) {
 	ASSERT_EQ(med.median(), 5.f);
 }
 
+TEST(MedianTest, ThreeElements) {
+	Median med;
+
+	med.add(1);
+	med.add(5);
+	med.add(10);
+
+	ASSERT_EQ(med.median(), 5.f);
+}
+
+TEST(MedianTest, TwoMaximumElements) {
+	constexpr int maxInt = std::numeric_limits<int>::max();
+
+	Median med;
+
+	med.add(maxInt);
+	med.add(maxInt);
+
+	ASSERT_EQ(med.median(), maxInt);
+}
+
+TEST(MedianTest, TwoMinimumElements) {
+	constexpr int minInt = std::numeric_limits<int>::min();
+
+	Median med;
+
+	med.add(minInt);
+	med.add(minInt);
+
+	ASSERT_EQ(med.median(), minInt);
+}
+
+TEST(MedianTest, InverseElements) {
+	Median med;
+
+	med.add(42);
+	med.add(-42);
+
+	ASSERT_EQ(med.median(), 0.f);
+}
+
 TEST(MedianTest, AddInAscendingOrder) {
 	Median med;
 
 	for (int i = 1; i <= 1'000'000; ++i) {
 		med.add(i);
-		const float m = med.median();
 
-		const int mid = i / 2;
+		const float trueMedian = [i] {
+			const int midIdx = i / 2;
+			if (i % 2 == 0) {
+				return (midIdx + midIdx + 1) / 2.f;
+			}
+			return midIdx + 1.f;
+		}();
 
-		if (i % 2 == 0) {
-			const float trueMid = (mid + mid + 1) / 2.f;
-			ASSERT_EQ(m, trueMid);
-		}
-		else {
-			const float trueMid = mid + 1.f;
-			ASSERT_EQ(m, trueMid);
-		}
+		ASSERT_EQ(med.median(), trueMedian);
 	}
 }
 
@@ -63,18 +102,16 @@ TEST(MedianTest, AddInDescendingOrder) {
 
 	for (int i = MAX_VAL; i >= 1; --i) {
 		med.add(i);
-		const float m = med.median();
 
-		const int mid = i + (MAX_VAL - i) / 2;
+		const float trueMedian = [MAX_VAL, i] {
+			const int midIdx = i + (MAX_VAL - i) / 2;
+			if (i % 2 == 0) {
+				return (midIdx + midIdx + 1) / 2.f;
+			}
+			return static_cast<float>(midIdx);
+		}();
 
-		if (i % 2 == 0) {
-			const float trueMid = (mid + mid + 1) / 2.f;
-			ASSERT_EQ(m, trueMid);
-		}
-		else {
-			const float trueMid = mid;
-			ASSERT_EQ(m, trueMid);
-		}
+		ASSERT_EQ(med.median(), trueMedian);
 	}
 }
 
