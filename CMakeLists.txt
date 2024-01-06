@@ -34,8 +34,8 @@ add_executable(
 # Link the Median lib to the main executable
 target_link_libraries(${MEDIAN_EXE} PRIVATE ${MEDIAN_LIB})
 
-add_custom_target(
-    run_median
-    COMMAND $<TARGET_FILE:${MEDIAN_EXE}>
-    COMMENT "Running ${MEDIAN_EXE} executable..."
+add_custom_command(
+    TARGET ${MEDIAN_EXE}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${MEDIAN_EXE}> ${CMAKE_BINARY_DIR}
 )
