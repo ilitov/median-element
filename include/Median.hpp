@@ -19,15 +19,20 @@ private:
 	template <typename T, typename Comp>
 	using Heap_t = CustomHeap<T, Comp>;
 
-	// We partition and keep the added numbers in two halves, each of which is organized as a heap.
-	// We also maintain the number of elements of each of the heaps so that their sizes are always equal
-	// or there is at most 1 element more in the bottom half.
+	// We partition and keep the added numbers in two separate halves, each of which is organized as a heap.
 	//
-	// The median element is always the top element of the bottom half or the avarage value of the two
-	// top elements in the two heaps in case both halves have the same size.
+	// We also maintain the number of elements in each of the heaps so that:
+	// (1) their sizes are always equal
+	// OR
+	// (2) the lower half has 1 more element than the upper half
+	//
+	// The median element is always:
+	// (1) the top element of the lower half
+	// OR
+	// (2) the average value of the two top elements if the two heaps have the same size
 
-	Heap_t<int, std::less<int>> m_bottomHalf;	// The half with all elements smaller that the current median
-	Heap_t<int, std::greater<int>> m_upperHalf;	// The half with all elements greater that the current median
+	Heap_t<int, std::less<int>> m_lowerHalf;	// The half with all elements <= the current median(max heap)
+	Heap_t<int, std::greater<int>> m_upperHalf;	// The half with all elements >= the current median(min heap)
 };
 
 #endif // !_MEDIAN_H_
